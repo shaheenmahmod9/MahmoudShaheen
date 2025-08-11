@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mahmoud Shaheen — Space Story</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #000000 0%, #000000 100%);
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+  }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  .name {
+    font-weight: 900;
+    font-size: 34px;
+    background: linear-gradient(270deg, #ff7a00, #ffd580, #ffffff, #ff7a00);
+    background-size: 800% 800%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 5s ease infinite, pulse 2s ease-in-out infinite;
+    margin-top: 20px;
+  }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 10px rgba(255,122,0,0.5); }
+    50% { transform: scale(1.05); text-shadow: 0 0 25px rgba(255,122,0,0.9); }
+  }
+  .poll {
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 90%;
+    margin-top: 20px;
+  }
+  .poll h2 {
+    color: #ffa64d;
+    font-size: 18px;
+  }
+  .option {
+    background: #ff7a00;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .option:hover {
+    background: #ffa64d;
+  }
+  .result {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #ffd580;
+  }
+  .spaceship {
+    position: fixed;
+    width: 60px;
+    bottom: -80px;
+    animation: fly 10s linear infinite;
+  }
+  @keyframes fly {
+    0% { transform: translateX(-100px) translateY(0) rotate(45deg); }
+    50% { transform: translateX(calc(100vw + 100px)) translateY(-200px) rotate(45deg); }
+    100% { transform: translateX(-100px) translateY(0) rotate(45deg); }
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/NASA_space_shuttle.png" class="spaceship" alt="Spaceship" />
+<div class="poll">
+  <h2>🌌 إذا كان لنا أن نحاور الكون نفسه، أي القضايا الكبرى تحب أن نخوض فيها معًا؟</h2>
+  <div class="option" data-count="0">نقد الفلسفة الهيجلية وفلسفة كانط وزراديتشت <div class="result"></div></div>
+  <div class="option" data-count="0">أحوال الأمة ما بين ذل وهوان <div class="result"></div></div>
+  <div class="option" data-count="0">فترة الثورة بأحداثها كما لم تسمعها من قبل ونزعة التوجه للأيديولوجيات الغربية <div class="result"></div></div>
+  <div class="option" data-count="0">الإقتصاد <div class="result"></div></div>
+  <div class="option" data-count="0">معلومات تخصصية في الأتمتة الصناعية <div class="result"></div></div>
+</div>
+<div class="name">Mahmoud shaheen</div>
+<script>
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const stars = Array.from({ length: 200 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 1.5,
+    speed: Math.random() * 0.5
+  }));
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    stars.forEach(star => {
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      ctx.fill();
+      star.y += star.speed;
+      if (star.y > canvas.height) star.y = 0;
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  const options = document.querySelectorAll('.option');
+  let totalVotes = 0;
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      let count = parseInt(option.getAttribute('data-count')) + 1;
+      option.setAttribute('data-count', count);
+      totalVotes++;
+      updateResults();
+    });
+  });
+  function updateResults() {
+    options.forEach(option => {
+      const count = parseInt(option.getAttribute('data-count'));
+      const percent = totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(1) : 0;
+      option.querySelector('.result').textContent = `${percent}%`;
+    });
+  }
+</script>
+</body>
+</html>
