@@ -8,7 +8,7 @@
   body {
     margin: 0;
     height: 100vh;
-    background: black;
+    background: radial-gradient(ellipse at bottom, #000000 0%, #000000 100%);
     color: white;
     font-family: Arial, sans-serif;
     display: flex;
@@ -52,6 +52,7 @@
   }
   .poll h2 {
     color: #ffa64d;
+    font-size: 18px;
   }
   .option {
     background: #ff7a00;
@@ -64,17 +65,34 @@
   .option:hover {
     background: #ffa64d;
   }
+  .result {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #ffd580;
+  }
+  .spaceship {
+    position: fixed;
+    width: 60px;
+    bottom: -80px;
+    animation: fly 10s linear infinite;
+  }
+  @keyframes fly {
+    0% { transform: translateX(-100px) translateY(0) rotate(45deg); }
+    50% { transform: translateX(calc(100vw + 100px)) translateY(-200px) rotate(45deg); }
+    100% { transform: translateX(-100px) translateY(0) rotate(45deg); }
+  }
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/NASA_space_shuttle.png" class="spaceship" alt="Spaceship" />
 <div class="poll">
-  <h2>📡 أي العوالم الفكرية تحب أن نستكشفها معًا في المرة القادمة؟</h2>
-  <div class="option">نقد الفلسفة الهيجلية وفلسفة كانط وزراديتشت</div>
-  <div class="option">أحوال الأمة ما بين ذل وهوان</div>
-  <div class="option">فترة الثورة بأحداثها كما لم تسمعها من قبل ونزعة التوجه للأيديولوجيات الغربية</div>
-  <div class="option">الإقتصاد</div>
-  <div class="option">معلومات تخصصية في الأتمتة الصناعية</div>
+  <h2>🌌 إذا كان لنا أن نحاور الكون نفسه، أي القضايا الكبرى تحب أن نخوض فيها معًا؟</h2>
+  <div class="option" data-count="0">نقد الفلسفة الهيجلية وفلسفة كانط وزراديتشت <div class="result"></div></div>
+  <div class="option" data-count="0">أحوال الأمة ما بين ذل وهوان <div class="result"></div></div>
+  <div class="option" data-count="0">فترة الثورة بأحداثها كما لم تسمعها من قبل ونزعة التوجه للأيديولوجيات الغربية <div class="result"></div></div>
+  <div class="option" data-count="0">الإقتصاد <div class="result"></div></div>
+  <div class="option" data-count="0">معلومات تخصصية في الأتمتة الصناعية <div class="result"></div></div>
 </div>
 <div class="name">Mahmoud shaheen</div>
 <script>
@@ -82,7 +100,7 @@
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  const stars = Array.from({ length: 150 }, () => ({
+  const stars = Array.from({ length: 200 }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     radius: Math.random() * 1.5,
@@ -90,6 +108,8 @@
   }));
   function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
     stars.forEach(star => {
       ctx.beginPath();
@@ -101,6 +121,24 @@
     requestAnimationFrame(drawStars);
   }
   drawStars();
+
+  const options = document.querySelectorAll('.option');
+  let totalVotes = 0;
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      let count = parseInt(option.getAttribute('data-count')) + 1;
+      option.setAttribute('data-count', count);
+      totalVotes++;
+      updateResults();
+    });
+  });
+  function updateResults() {
+    options.forEach(option => {
+      const count = parseInt(option.getAttribute('data-count'));
+      const percent = totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(1) : 0;
+      option.querySelector('.result').textContent = `${percent}%`;
+    });
+  }
 </script>
 </body>
 </html>
