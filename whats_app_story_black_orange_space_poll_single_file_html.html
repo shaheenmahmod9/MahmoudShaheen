@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mahmoud Shaheen — Space Story</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+  }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  .name {
+    font-weight: 900;
+    font-size: 34px;
+    background: linear-gradient(270deg, #ff7a00, #ffd580, #ffffff, #ff7a00);
+    background-size: 800% 800%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 5s ease infinite, pulse 2s ease-in-out infinite;
+    margin-top: 20px;
+  }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 10px rgba(255,122,0,0.5); }
+    50% { transform: scale(1.05); text-shadow: 0 0 25px rgba(255,122,0,0.9); }
+  }
+  .poll {
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 90%;
+    margin-top: 20px;
+  }
+  .poll h2 {
+    color: #ffa64d;
+  }
+  .option {
+    background: #ff7a00;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .option:hover {
+    background: #ffa64d;
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="poll">
+  <h2>📡 أي العوالم الفكرية تحب أن نستكشفها معًا في المرة القادمة؟</h2>
+  <div class="option">نقد الفلسفة الهيجلية وفلسفة كانط وزراديتشت</div>
+  <div class="option">أحوال الأمة ما بين ذل وهوان</div>
+  <div class="option">فترة الثورة بأحداثها كما لم تسمعها من قبل ونزعة التوجه للأيديولوجيات الغربية</div>
+  <div class="option">الإقتصاد</div>
+  <div class="option">معلومات تخصصية في الأتمتة الصناعية</div>
+</div>
+<div class="name">Mahmoud shaheen</div>
+<script>
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const stars = Array.from({ length: 150 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 1.5,
+    speed: Math.random() * 0.5
+  }));
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    stars.forEach(star => {
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      ctx.fill();
+      star.y += star.speed;
+      if (star.y > canvas.height) star.y = 0;
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+</script>
+</body>
+</html>
